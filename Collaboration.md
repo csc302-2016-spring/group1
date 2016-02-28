@@ -18,6 +18,14 @@ We have a spread sheet with contact info made available on:
  - I live on campus, available non-lecture time and weekends:
 ![leo time](LeoTime.png)
 
+### Abay Jashibekov
+
+- Experience:
+	- Worked in an IT security company (customized an AngularJS/JS/... app for the company)
+- Skills:
+	- С/Java, JS/HTML/..., git, Eclipse IDE
+- Availability
+ - I live on campus, available almost always (except for Mon, Tue, Wed, Fri evenings)
 
 # Meetings 
 
