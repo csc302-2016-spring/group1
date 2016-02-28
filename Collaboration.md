@@ -27,6 +27,16 @@ We have a spread sheet with contact info made available on:
 - Availability
  - I live on campus, available almost always (except for Mon, Tue, Wed, Fri evenings)
 
+### Hin Shun Edgar Lee
+
+- Experience:
+	- Worked at Financeit for 12 months
+- Skills:
+	- Frontend / Backend web development
+- Availability
+ - I live on campus, available online non-lecture time and weekends:
+![edgar time](EdgarTime.png)
+
 # Meetings 
 
 ## Meeting 1 - 26th of feb
