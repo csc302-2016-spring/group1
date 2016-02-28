@@ -10,7 +10,7 @@ We have a spread sheet with contact info made available on:
 
 - Experience:
 	- CSC309 for webdevelopment. Javascript/CSS/html/etc.. 
-	- Worked at Red Hat for 16 moths
+	- Worked at Red Hat for 16 months
 - Skills:
 	- Web-languages / git / IDEs like Eclipse and Intellij / emacs / vim 
 	- hacking stuff in general
@@ -42,7 +42,7 @@ We have a spread sheet with contact info made available on:
 ## Meeting 1 - 26th of feb
 We met face-to-face in tutorial. We threw around ideas for a plugin and narrowed it down to a taggable bookmarks plugin.  
 
-We then disscussed popential features and bonus features that we could implement, as well as a way to distribute work.  
+We then discussed potential features and bonus features that we could implement, as well as a way to distribute work.  
 
 We created this shared git group repo to keep track of code/note artifacts.
 

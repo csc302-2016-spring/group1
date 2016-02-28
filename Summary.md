@@ -19,10 +19,10 @@ The details are as following:
 		offroad 
 		
 	
-- The main advantage of this approach is that this plugin will work with existing bookmark sync services and does not require additional login or synchronization with yet another service. It will also be backwards compatible with older bookmarks (tags can be added to them by th user).
+- The main advantage of this approach is that this plugin will work with existing bookmark sync services and does not require additional login or synchronization with yet another service. It will also be backwards compatible with older bookmarks (tags can be added to them by the user).
 		
 - The user will be able to select one or more tags, and the plugin on the right will present matching bookmarks. Ex the user may select "bike" and "road", and the plugin will list all the bookmarks that include the "bike" and "road" bookmark.
-![Artifcat1](a1.jpg "Artifcat 1")
+![Artifact1](a1.jpg "Artifact 1")
 
 - In addition there will be a search bar, that will allow the user to further narrow down bookmarks based on fuzzy search. I.e, he/she may search for "evil 123" and find the example above.
 
@@ -31,7 +31,7 @@ The details are as following:
 - This should allow the user to quickly search through his/her bookmark to narrow a large set of bookmarks to a smaller one.
 
 #### Bonus features 
-If time permits, we may add bonut features to our plugins.  
+If time permits, we may add bonus features to our plugins.
 
 - Global shortcut to open bookmark search plane
 - Sort tags by count (most popular at the top)
@@ -58,7 +58,7 @@ If time permits, we may add bonut features to our plugins.
 - It's unlikley, but some bookmarks may contain text that may be assosiated as a tag. As such, care must be taken to select the prefix for a tag. For example a single hash "#" may casue unexpected entries to be listed as tags.
 
 ## How are you planning to build it 
-Tennativley, we will probably use the Firefox addonSDK to implemnt this functionality. However, we will investigate if it's possible to do it in webextension also. 
+Tentatively, we will probably use the Firefox addonSDK to implemnt this functionality. However, we will investigate if it's possible to do it in webextension also. 
 
 In terms of components:  
 
@@ -66,8 +66,8 @@ In terms of components:
 
 - **Browser button:** We will have a button that opens the bookmark search plane. This will be located somewhere near the bookmark button in firefox, near the URL bar.
 - **Search plane:** We will have a search plane that will have a search bar, a list of tags that can be clicked on and results on the right, as depicted in Artifact 2: 
-	![Artifcat 2](a2.jpg "Artifact 2")
-- **Clickable taggs:** When clicking on each listed tag, it will be changed so that it is visible that it is clicked. Ex we could use a button that wen pressed is held down.
+	![Artifact 2](a2.jpg "Artifact 2")
+- **Clickable tags:** When clicking on each listed tag, it will be changed so that it is visible that it is clicked. Ex we could use a button that wen pressed is held down.
 - **List of Results:** The matching bookmarks will be listed on the right. When you click on one, it will close the search plane and instead open the bookmark. 
 
 
@@ -79,5 +79,5 @@ In terms of components:
 
 	
 ### Assignment of work
-We may meet up to code on stuff together, or we may assign induvidual features of the project to each person. Ex bonus features etc.. 
+We may meet up to code on stuff together, or we may assign individual features of the project to each person. Ex bonus features etc.. 
   
