@@ -37,6 +37,19 @@ We have a spread sheet with contact info made available on:
  - I live on campus, available online non-lecture time and weekends:
 ![edgar time](EdgarTime.png)
 
+### Jon Morris-Pocock
+
+- Experience:
+	- Worked at Symantec for 14 months
+- Skills:
+	- Python/C/Java
+	- HTML/Javascript/Ruby on Rails
+	- etc..
+- Availability
+ - I live a half hour walk from campus. Available online whenever I'm not in class.
+ - Night classes on Tuesday and Wednesday.
+![jon time](JonTime.png)
+
 # Meetings 
 
 ## Meeting 1 - 26th of feb
