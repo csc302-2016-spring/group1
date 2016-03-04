@@ -12,11 +12,11 @@ The details are as following:
 		bug 123 - my evil bug   __tag1 __tag2
 - Then the plugin will have a search functionality that will list all the tags that it finds and presents them in an alphabetically sorted list. e.g.: 
 
+		bike
+		offroad
+		road
 		tag1
 		tag2
-		bike
-		road
-		offroad 
 		
 	
 - Because tags are simply stored as part of a bookmark's title, the main advantage of this approach is that this plugin will work with existing bookmark sync services and will not require additional login or synchronization with yet another service. It will also be backwards compatible with older bookmarks (tags can be added to them by the user).
