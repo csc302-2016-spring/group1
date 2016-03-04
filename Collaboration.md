@@ -50,6 +50,15 @@ We have a spread sheet with contact info made available on:
  - Night classes on Tuesday and Wednesday.
 ![jon time](JonTime.png)
 
+### Shiv Baijal
+
+- Experience:
+  - Internship at Groupon
+- Skills:
+  - Mostly mobile development, some frontend and backend experience, some Sketch (design tool) experience
+- Availability
+ - I am available to meet on campus on Mondays, Tuesdays, and Thursdays. 
+
 # Meetings 
 
 ## Meeting 1 - 26th of feb
