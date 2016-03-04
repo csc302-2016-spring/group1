@@ -59,6 +59,16 @@ We have a spread sheet with contact info made available on:
 - Availability
  - I am available to meet on campus on Mondays, Tuesdays, and Thursdays. 
 
+
+### Faith Magcalas
+
+- Skills:
+  - Python, Java, C
+  - HTML, SQL
+- Availability
+  - Not available Sunday afternoons or Thursday or Friday evenings after 6  
+![it's faith time whoo](FaithTime.PNG)  
+
 # Meetings 
 
 ## Meeting 1 - 26th of feb
