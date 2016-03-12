@@ -1,0 +1,16 @@
+{
+  "title": "Flashcards",
+  "name": "flashcards",
+  "version": "0.0.1",
+  "description": "An add-on for creating and using flashcards within Firefox",
+  "main": "index.js",
+  "author": "Lev Ufimtsev, Abay Jashibekov, Hin Shun Edgar Lee, Jon Morris-Pocock, Shiv Baijal, Faith Magcalas",
+  "engines": {
+    "firefox": ">=38.0a1",
+    "fennec": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}
