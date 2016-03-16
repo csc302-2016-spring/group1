@@ -1,6 +1,6 @@
 var self = require("sdk/self");
 
-/* Initialize the flashcard peristence object. */
+/* Initialize the flashcard persistence object. */
 var ss = require("sdk/simple-storage");
 if (typeof ss.storage.flashcards == "undefined") {
   ss.storage.flashcards = [];
