@@ -54,7 +54,7 @@ deleteCard.addEventListener('click', function() {
   if (flashcards.length == 0) {
   	self.port.emit('browse-flashcards-close');
   } else {
-  	if (currentFlashcard = flashcards.length) {
+  	if (currentFlashcard == flashcards.length) {
   		currentFlashcard--;
   	}
   	enableDisablePreviousNext();

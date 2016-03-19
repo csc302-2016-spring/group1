@@ -70,7 +70,7 @@ browse_flashcards.port.on('update-flashcard', function(index, value) {
 
 /* Delete the flashcard. */
 browse_flashcards.port.on('delete-flashcard', function(index) {
-  ss.storage.flashcards.splice(index);
+  ss.storage.flashcards.splice(index, 1);
 });
 
 /* Create the addon button for browsing flashcards. */
