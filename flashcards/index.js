@@ -1,4 +1,6 @@
 var self = require('sdk/self');
+var { ToggleButton } = require('sdk/ui/button/toggle');
+var panels = require('sdk/panel')
 
 /* Initialize the flashcard persistence object. */
 var ss = require('sdk/simple-storage');
@@ -7,7 +9,7 @@ if (typeof ss.storage.flashcards == 'undefined') {
 }
 
 /* Create the 'Create Flashcard' popup panel. */
-var create_flashcard = require('sdk/panel').Panel({
+var create_flashcard = panels.Panel({
   width: 500,
   height: 390,
   contentURL: self.data.url('create-flashcard.html'),
@@ -73,17 +75,57 @@ browse_flashcards.port.on('delete-flashcard', function(index) {
   ss.storage.flashcards.splice(index, 1);
 });
 
-/* Create the addon button for browsing flashcards. */
-var button = require('sdk/ui/button/action').ActionButton({
-  id: 'browse-flashcards',
-  label: 'Browse Flashcards',
+/* Create the addon button for browsing/testing flashcards. */
+var button = ToggleButton({
+  id: 'flashcards-button',
+  label: 'Flashcards',
   icon: {
     '16': './icon-16.png',
     '32': './icon-32.png',
     '64': './icon-64.png'
   },
-  onClick: function(state) {
-    browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
-    browse_flashcards.show();
-  }
+  onChange: handleChange
 });
+
+/* Create the navigation panel that is displayed when the addon
+ * button is clicked.
+ */
+var buttonPanel = panels.Panel({
+  contentURL: self.data.url('button-panel.html'),
+  contentScriptFile: self.data.url('button-panel.js'),
+  width: 200,
+  height: 80,
+  onHide: handleHide
+});
+
+/* Show the navigation panel when the addon button is clicked. */
+function handleChange(state) {
+  if (state.checked) {
+    buttonPanel.show({
+      position: button
+    });
+  }
+}
+
+/* Hide the navigation panel when the addon button is clicked
+ * while the panel is open.
+ */
+function handleHide() {
+  button.state('window', {checked: false});
+}
+
+/* Open the "Browse Flashcards" popup when the browse option
+ * is selected from the navigation panel.
+ */
+buttonPanel.port.on('browse-selected', function() {
+  browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
+  browse_flashcards.show();
+});
+
+/* Open the "Test Yourself" popup when the test option is
+ * selected from the navigation panel.
+ */
+buttonPanel.port.on('test-selected', function() {
+  /* TODO: Add testing stuff here. */
+});
+
