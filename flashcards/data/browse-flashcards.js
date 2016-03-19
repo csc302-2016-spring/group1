@@ -1,6 +1,7 @@
 var front = document.getElementById('front');
 var back = document.getElementById('back');
 var update = document.getElementById('update');
+var deleteCard = document.getElementById('delete');
 var close = document.getElementById('close');
 var previous = document.getElementById('previous');
 var next = document.getElementById('next');
@@ -43,6 +44,24 @@ update.addEventListener('click', function() {
   flashcards[currentFlashcard].front = front.value;
   flashcards[currentFlashcard].back = back.value;
   self.port.emit('update-flashcard', currentFlashcard, flashcards[currentFlashcard]);
+}, false);
+
+/* Delete the current card when the 'delete' button is clicked. */
+deleteCard.addEventListener('click', function() {
+  flashcards.splice(currentFlashcard, 1);
+  self.port.emit('delete-flashcard', currentFlashcard);
+
+  if (flashcards.length == 0) {
+  	self.port.emit('browse-flashcards-close');
+  } else {
+  	if (currentFlashcard = flashcards.length) {
+  		currentFlashcard--;
+  	}
+  	enableDisablePreviousNext();
+  	front.value = flashcards[currentFlashcard].front;
+  	back.value = flashcards[currentFlashcard].back;
+  }
+
 }, false);
 
 /* Disable the 'previous' link if on the first flashcard
