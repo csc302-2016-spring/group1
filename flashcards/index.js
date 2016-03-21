@@ -1,6 +1,12 @@
 var self = require('sdk/self');
 var { ToggleButton } = require('sdk/ui/button/toggle');
 var panels = require('sdk/panel')
+var tabs = require('sdk/tabs')
+
+/* Constants, used to determine which flashcard to display */ 
+const FLASHCARD_RANDOM = 0;
+const FLASHCARD_SEQUENCE = 1;
+var counterFlashcard = 0;
 
 /* Initialize the flashcard persistence object. */
 var ss = require('sdk/simple-storage');
@@ -21,7 +27,7 @@ var create_flashcard = panels.Panel({
  * when the 'Create Flashcard' form is submitted.
  */
 create_flashcard.port.on('create-flashcard-submit', function(front, back) {
-  ss.storage.flashcards.push({front: front, back: back});
+  ss.storage.flashcards.push({front: front, back: back, url: tabs.activeTab.url});
   create_flashcard.hide();
 });
 
@@ -52,7 +58,7 @@ var menuItem = contextMenu.Item({
 /* Create the 'Browse Flashcards' popup panel. */
 var browse_flashcards = require('sdk/panel').Panel({
   width: 500,
-  height: 390,
+  height: 560,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
   contentStyle: 'body { margin: 10px; }'
@@ -122,10 +128,52 @@ buttonPanel.port.on('browse-selected', function() {
   browse_flashcards.show();
 });
 
+/* Create the "Test Yourself" pop-up panel. 
+ * 
+ */
+var test_panel = require('sdk/panel').Panel({
+  width: 500,
+  height: 390,
+  contentURL: self.data.url('test-panel.html'),
+  contentScriptFile: self.data.url('test-panel.js'),
+  contentStyle: 'body: { margin: 10px; }'
+});
+
+/* Hide the testing panel when the "Test Yourself"
+ * panel is closed.
+ */
+test_panel.port.on('test-panel-close', function() {
+  test_panel.hide();
+});
+
+/* Helper function to determine which flashcard to show.
+ *
+ * @param method Either FLASHCARD_RANDOM for a random flashcard
+ *               or FLASHCARD_SEQUENCE for a flashcard in sequential order
+ * @return       Flashcard to be displayed by a test panel
+ */
+function flashcardToDisplay (method) {
+  if(method == FLASHCARD_RANDOM) { 
+    var length = ss.storage.flashcards.length;
+    if (length == 0) return null;
+    var rand = Math.floor(Math.random() * length);
+    return ss.storage.flashcards[rand];
+  } else if (method == FLASHCARD_SEQUENCE){
+    var ind = counterFlashcard;
+    counterFlashcard = (counterFlashcard + 1) % ss.storage.flashcards.length;
+    return ss.storage.flashcards[ind];
+  } else {
+    return null;
+  }  
+}
+
 /* Open the "Test Yourself" popup when the test option is
  * selected from the navigation panel.
  */
 buttonPanel.port.on('test-selected', function() {
-  /* TODO: Add testing stuff here. */
+  var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+  if (flashcard == null) return;
+  test_panel.port.emit('set-question', flashcard);
+  test_panel.show();
 });
 
