@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <link rel='stylesheet' href='flashcards.css'>
+    <link rel='stylesheet' href='bootstrap.min.css'>
+    <link rel='stylesheet' href='bootstrap-theme.min.css'>
+    <script src='bootstrap.min.js'></script>
+  </head>
+
+  <body>
+    <div class='form-group' id='question-div'>
+      <label for='question'>Question:</label>
+      <textarea class='form-control' rows='5' id='question' readonly></textarea>
+      <button type='button' class='btn btn-default' id='show_answer'>Show Answer!</button>
+    </div>
+    <div class='form-group' id='answer-div'>
+      <label for='answer'>Answer:</label>
+      <textarea class='form-control' rows='5' id='answer' readonly></textarea>
+    </div>
+    <div class='form-group'>
+      <label for='url'>Taken from:</label>
+      <textarea class='form-control' rows='5' id='url' readonly></textarea>
+    </div>
+    <div class='bottomright'>
+      <a href='#' id='close'>close</a>
+    </div>
+  </body>
+</html>
