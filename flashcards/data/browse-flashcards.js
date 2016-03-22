@@ -1,5 +1,6 @@
 var front = document.getElementById('front');
 var back = document.getElementById('back');
+var url = document.getElementById('url');
 var update = document.getElementById('update');
 var deleteCard = document.getElementById('delete');
 var close = document.getElementById('close');
@@ -27,6 +28,7 @@ self.port.on('flashcards', function setFlashcards(flashcard_array) {
   	enableDisablePreviousNext();
   	front.value = flashcards[currentFlashcard].front;
   	back.value = flashcards[currentFlashcard].back;
+        url.value = flashcards[currentFlashcard].url;
   	details.style.display = 'block';
   	noFlashcards.style.display = 'none';
   }
@@ -43,6 +45,7 @@ close.addEventListener('click', function() {
 update.addEventListener('click', function() {
   flashcards[currentFlashcard].front = front.value;
   flashcards[currentFlashcard].back = back.value;
+  flashcards[currentFlashcard].url = url.value;
   self.port.emit('update-flashcard', currentFlashcard, flashcards[currentFlashcard]);
 }, false);
 
@@ -60,6 +63,7 @@ deleteCard.addEventListener('click', function() {
   	enableDisablePreviousNext();
   	front.value = flashcards[currentFlashcard].front;
   	back.value = flashcards[currentFlashcard].back;
+        url.value = flashcards[currentFlashcard].url;
   }
 
 }, false);
@@ -89,6 +93,7 @@ next.addEventListener('click', function() {
   enableDisablePreviousNext();
   front.value = flashcards[currentFlashcard].front;
   back.value = flashcards[currentFlashcard].back;
+  url.value = flashcards[currentFlashcard].url;
 }, false);
 
 /* Display the previous flashcard's details. */
@@ -97,5 +102,6 @@ previous.addEventListener('click', function() {
   enableDisablePreviousNext();
   front.value = flashcards[currentFlashcard].front;
   back.value = flashcards[currentFlashcard].back;
+  url.value = flashcards[currentFlashcard].url;
 }, false);
 
