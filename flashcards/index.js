@@ -6,12 +6,14 @@ var tabs = require('sdk/tabs')
 /* Constants, used to determine which flashcard to display */ 
 const FLASHCARD_RANDOM = 0;
 const FLASHCARD_SEQUENCE = 1;
-var counterFlashcard = 0;
 
 /* Initialize the flashcard persistence object. */
 var ss = require('sdk/simple-storage');
 if (typeof ss.storage.flashcards == 'undefined') {
   ss.storage.flashcards = [];
+}
+if (typeof ss.storage.counterFlashcard == 'undefined') {
+  ss.storage.counterFlashcard = 0;
 }
 
 /* Create the 'Create Flashcard' popup panel. */
@@ -159,8 +161,8 @@ function flashcardToDisplay (method) {
     var rand = Math.floor(Math.random() * length);
     return ss.storage.flashcards[rand];
   } else if (method == FLASHCARD_SEQUENCE){
-    var ind = counterFlashcard;
-    counterFlashcard = (counterFlashcard + 1) % ss.storage.flashcards.length;
+    var ind = ss.storage.counterFlashcard;
+    ss.storage.counterFlashcard = (ss.storage.counterFlashcard + 1) % ss.storage.flashcards.length;
     return ss.storage.flashcards[ind];
   } else {
     return null;
@@ -176,4 +178,3 @@ buttonPanel.port.on('test-selected', function() {
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 });
-
