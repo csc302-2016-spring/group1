@@ -1,20 +1,17 @@
 # group1 - Firefox taggable bookmarks 
 
 ## Phase 1  
-~~Please see:~~
+~~Tags for bookmarks. Please see:~~
 
 - ~~[Summary.md](Summary.md)~~
 - ~~[Collaboration.md](Collaboration.md)~~
 
-## Phase 2 
-- Members present at the meeting: 
-	- Lev Ufimtsev
-	- Edgar Lee
-	- Shiv Baijal
-	- Faith Magcalas
-	- Jon Morris-Pocock
+## Phase 2 -- Flashcards
+Initially we wanted to build tags for bookmarks. But then we found out that firefox already had this feature.  
+Instead we implemented a flashcard pluting.
 
-- Meeting notes
-	- We discovered that firefox had already implemented taggable bookmarks, as such we decided to implement a flashcards plugin instead. See below.
+For phase 2, we have produced the following artifcats:
 
-- Write up: [flashcards.md](flashcards.md)
+- [Design, implementation and team documentation](doc/phase2/planning.md)
+- [Product demonstration with screen shots](doc/phase2/product.md)
+- [Original feature specifications](featurespec.md)
