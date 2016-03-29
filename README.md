@@ -1,10 +1,10 @@
 # group1 - Firefox taggable bookmarks 
 
 ## Phase 1  
-Please see:  
+~~Please see:~~
 
-- [Summary.md](Summary.md)
-- [Collaboration.md](Collaboration.md)
+- ~~[Summary.md](Summary.md)~~
+- ~~[Collaboration.md](Collaboration.md)~~
 
 ## Phase 2 
 - Members present at the meeting: 
