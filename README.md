@@ -12,6 +12,5 @@ Instead we implemented a flashcard pluting.
 
 For phase 2, we have produced the following artifcats:
 
-- [Design, implementation and team documentation](doc/phase2/planning.md)
-- [Product demonstration with screen shots](doc/phase2/product.md)
+- [Technical product report with screen shots](doc/phase2/product.md)
 - [Original feature specifications](featurespec.md)
