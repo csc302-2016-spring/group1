@@ -12,7 +12,7 @@ var ss = require('sdk/simple-storage');
 if (typeof ss.storage.flashcards == 'undefined') {
   ss.storage.flashcards = [];
 }
-if (typeof ss.storage.counterFlashcard == 'undefined') {
+if (typeof ss.storage.counterFlashcard == 'undefined'){
   ss.storage.counterFlashcard = 0;
 }
 
@@ -162,8 +162,11 @@ function flashcardToDisplay (method) {
     return ss.storage.flashcards[rand];
   } else if (method == FLASHCARD_SEQUENCE){
     var ind = ss.storage.counterFlashcard;
-    ss.storage.counterFlashcard = (ss.storage.counterFlashcard + 1) % ss.storage.flashcards.length;
-    return ss.storage.flashcards[ind];
+    if (ss.storage.flashcards[ind] != null) {
+    	ss.storage.counterFlashcard = (ss.storage.counterFlashcard + 1) % ss.storage.flashcards.length;
+    	return ss.storage.flashcards[ind];
+    } else
+	return null;
   } else {
     return null;
   }  
@@ -178,3 +181,4 @@ buttonPanel.port.on('test-selected', function() {
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 });
+
