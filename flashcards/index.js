@@ -56,7 +56,8 @@ var browse_flashcards = require('sdk/panel').Panel({
   height: 500,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
-  contentStyle: 'body { margin: 10px; }'
+  contentStyle: 'body { margin: 10px; }',
+  onHide: handleHide
 });
 
 /* Hide the browsing panel when the 'Browse Flashcards' form
@@ -138,7 +139,8 @@ var test_panel = require('sdk/panel').Panel({
   height: 220,
   contentURL: self.data.url('test-panel.html'),
   contentScriptFile: self.data.url('test-panel.js'),
-  contentStyle: 'body: { margin: 10px; }'
+  contentStyle: 'body: { margin: 10px; }',
+  onHide: handleHide
 });
 
 test_panel.port.on('source-in-new-tab', function(url) {
