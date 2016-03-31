@@ -165,6 +165,7 @@ function flashcardToDisplay (method) {
     return ss.storage.flashcards[rand];
   } else if (method == FLASHCARD_SEQUENCE){
     var ind = ss.storage.counterFlashcard;
+    if (ss.storage.flashcards[ind] == null) return null;
     ss.storage.counterFlashcard = (ss.storage.counterFlashcard + 1) % ss.storage.flashcards.length;
     return ss.storage.flashcards[ind];
   } else {
