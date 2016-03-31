@@ -33,13 +33,6 @@ create_flashcard.port.on('create-flashcard-submit', function(front, back) {
   create_flashcard.hide();
 });
 
-/* Hide the creation window when the 'Create Flashcard' form
- * is closed.
- */
-create_flashcard.port.on('create-flashcard-close', function() {
-  create_flashcard.hide();
-});
-
 /* Create the right-click menu entry for flashcard creation,
  * and set the 'Front' field to the highlighted text.
  */
@@ -109,9 +102,16 @@ var buttonPanel = panels.Panel({
 /* Show the navigation panel when the addon button is clicked. */
 function handleChange(state) {
   if (state.checked) {
-    buttonPanel.show({
-      position: button
-    });
+    if (ss.storage.flashcards.length == 0) {
+      buttonPanel.show({
+        position: button
+      });
+    } else {
+      var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+      if (flashcard == null) return;
+      test_panel.port.emit('set-question', flashcard);
+      test_panel.show();
+    }
   }
 }
 
@@ -139,13 +139,6 @@ var test_panel = require('sdk/panel').Panel({
   contentURL: self.data.url('test-panel.html'),
   contentScriptFile: self.data.url('test-panel.js'),
   contentStyle: 'body: { margin: 10px; }'
-});
-
-/* Hide the testing panel when the "Test Yourself"
- * panel is closed.
- */
-test_panel.port.on('test-panel-close', function() {
-  test_panel.hide();
 });
 
 test_panel.port.on('source-in-new-tab', function(url) {
@@ -184,6 +177,13 @@ buttonPanel.port.on('test-selected', function() {
 });
 
 test_panel.port.on('test-selected', function() {
+  var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+  if (flashcard == null) return;
+  test_panel.port.emit('set-question', flashcard);
+  test_panel.show();
+});
+
+browse_flashcards.port.on('test-selected', function() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
   if (flashcard == null) return;
   test_panel.port.emit('set-question', flashcard);

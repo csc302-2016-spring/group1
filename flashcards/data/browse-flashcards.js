@@ -3,12 +3,12 @@ var back = document.getElementById('back');
 var url = document.getElementById('url');
 var update = document.getElementById('update');
 var deleteCard = document.getElementById('delete');
-var close = document.getElementById('close');
 var previous = document.getElementById('previous');
 var next = document.getElementById('next');
 var page = document.getElementById('page');
 var details = document.getElementById('details');
 var noFlashcards = document.getElementById('no-flashcards');
+var test = document.getElementById('test');
 
 var flashcards;
 var currentFlashcard;
@@ -33,11 +33,6 @@ self.port.on('flashcards', function setFlashcards(flashcard_array) {
   	noFlashcards.style.display = 'none';
   }
 });
-
-/* Hide the popup when then 'close' link is clicked. */
-close.addEventListener('click', function() {
-  self.port.emit('browse-flashcards-close');
-}, false);
 
 /* Update the current flashcard when the 'update' button
  * is clicked.
@@ -103,5 +98,9 @@ previous.addEventListener('click', function() {
   front.value = flashcards[currentFlashcard].front;
   back.value = flashcards[currentFlashcard].back;
   url.value = flashcards[currentFlashcard].url;
+}, false);
+
+test.addEventListener('click', function() {
+  self.port.emit('test-selected');
 }, false);
 

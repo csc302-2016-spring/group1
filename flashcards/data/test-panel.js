@@ -1,7 +1,6 @@
 var question = document.getElementById('question');
 var answerToDisplay = document.getElementById('answer');
 var show_answer = document.getElementById('show_answer');
-var close = document.getElementById('close');
 var divQuestion = document.getElementById('question-div');
 var divAnswer = document.getElementById('answer-div');
 var source = document.getElementById('source');
@@ -19,13 +18,6 @@ show_answer.addEventListener('click', function () {
   divAnswer.style.display = 'block';
   divQuestion.style.display = 'none';
   question.value = '';
-}, false);
-
-/*
- * Hide the pop-up when the close is clicked
- */ 
-close.addEventListener('click', function () {
-  self.port.emit('test-panel-close');
 }, false);
 
 /*
