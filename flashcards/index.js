@@ -56,8 +56,7 @@ var browse_flashcards = require('sdk/panel').Panel({
   height: 500,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
-  contentStyle: 'body { margin: 10px; }',
-  onHide: handleHide
+  contentStyle: 'body { margin: 10px; }'
 });
 
 /* Hide the browsing panel when the 'Browse Flashcards' form
@@ -74,6 +73,9 @@ browse_flashcards.port.on('update-flashcard', function(index, value) {
 
 /* Delete the flashcard. */
 browse_flashcards.port.on('delete-flashcard', function(index) {
+  if (ss.storage.counterFlashcard == ss.storage.flashcards.length-1) {
+    ss.storage.counterFlashcard = 0;
+  }
   ss.storage.flashcards.splice(index, 1);
 });
 
@@ -123,14 +125,6 @@ function handleHide() {
   button.state('window', {checked: false});
 }
 
-/* Open the "Browse Flashcards" popup when the browse option
- * is selected from the navigation panel.
- */
-buttonPanel.port.on('browse-selected', function() {
-  browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
-  browse_flashcards.show();
-});
-
 /* Create the "Test Yourself" pop-up panel. 
  * 
  */
@@ -167,16 +161,6 @@ function flashcardToDisplay (method) {
     return null;
   }  
 }
-
-/* Open the "Test Yourself" popup when the test option is
- * selected from the navigation panel.
- */ 
-buttonPanel.port.on('test-selected', function() {
-  var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return;
-  test_panel.port.emit('set-question', flashcard);
-  test_panel.show();
-});
 
 test_panel.port.on('test-selected', function() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
