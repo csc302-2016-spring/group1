@@ -96,7 +96,6 @@ var button = ToggleButton({
  */
 var buttonPanel = panels.Panel({
   contentURL: self.data.url('button-panel.html'),
-  contentScriptFile: self.data.url('button-panel.js'),
   width: 200,
   height: 80,
   onHide: handleHide
@@ -111,7 +110,6 @@ function handleChange(state) {
       });
     } else {
       var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-      if (flashcard == null) return;
       test_panel.port.emit('set-question', flashcard);
       test_panel.show();
     }
@@ -164,14 +162,12 @@ function flashcardToDisplay (method) {
 
 test_panel.port.on('test-selected', function() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return;
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 });
 
 browse_flashcards.port.on('test-selected', function() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return;
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 });
