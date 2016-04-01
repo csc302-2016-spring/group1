@@ -83,3 +83,9 @@ During development, we had to [disable verification of plugins](http://superuser
 
 ## Plans for final demo
 Initially we planned to implement the "editing of existing flashcards" (bonus feature) after good Friday. But since P2 got moved back a week, we finished up with all the planned features and are good to go.
+
+We plan to implement:
+- Other options for sequencing cards in the test panel, such as random order or spaced repetition.
+- Links that let us switch easily between testing and browsing on the same card.
+- Source links on the cards and a way to verify that links are well-formed when they are updated.
+- A way to change which side of the card the highlighted text is pasted to.
