@@ -89,3 +89,4 @@ We plan to implement:
 - Links that let us switch easily between testing and browsing on the same card.
 - Source links on the cards and a way to verify that links are well-formed when they are updated.
 - A way to change which side of the card the highlighted text is pasted to.
+- A 'next' link on the test panel to be able to review multiple cards successively.
