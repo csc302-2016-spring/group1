@@ -33,13 +33,6 @@ create_flashcard.port.on('create-flashcard-submit', function(front, back) {
   create_flashcard.hide();
 });
 
-/* Hide the creation window when the 'Create Flashcard' form
- * is closed.
- */
-create_flashcard.port.on('create-flashcard-close', function() {
-  create_flashcard.hide();
-});
-
 /* Create the right-click menu entry for flashcard creation,
  * and set the 'Front' field to the highlighted text.
  */
@@ -60,7 +53,7 @@ var menuItem = contextMenu.Item({
 /* Create the 'Browse Flashcards' popup panel. */
 var browse_flashcards = require('sdk/panel').Panel({
   width: 500,
-  height: 560,
+  height: 500,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
   contentStyle: 'body { margin: 10px; }'
@@ -80,6 +73,9 @@ browse_flashcards.port.on('update-flashcard', function(index, value) {
 
 /* Delete the flashcard. */
 browse_flashcards.port.on('delete-flashcard', function(index) {
+  if (ss.storage.counterFlashcard == ss.storage.flashcards.length-1) {
+    ss.storage.counterFlashcard = 0;
+  }
   ss.storage.flashcards.splice(index, 1);
 });
 
@@ -100,7 +96,6 @@ var button = ToggleButton({
  */
 var buttonPanel = panels.Panel({
   contentURL: self.data.url('button-panel.html'),
-  contentScriptFile: self.data.url('button-panel.js'),
   width: 200,
   height: 80,
   onHide: handleHide
@@ -109,9 +104,15 @@ var buttonPanel = panels.Panel({
 /* Show the navigation panel when the addon button is clicked. */
 function handleChange(state) {
   if (state.checked) {
-    buttonPanel.show({
-      position: button
-    });
+    if (ss.storage.flashcards.length == 0) {
+      buttonPanel.show({
+        position: button
+      });
+    } else {
+      var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+      test_panel.port.emit('set-question', flashcard);
+      test_panel.show();
+    }
   }
 }
 
@@ -122,32 +123,21 @@ function handleHide() {
   button.state('window', {checked: false});
 }
 
-/* Open the "Browse Flashcards" popup when the browse option
- * is selected from the navigation panel.
- */
-buttonPanel.port.on('browse-selected', function() {
-  browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
-  browse_flashcards.show();
-});
-
 /* Create the "Test Yourself" pop-up panel. 
  * 
  */
 var test_panel = require('sdk/panel').Panel({
   width: 500,
-  height: 390,
+  height: 220,
   contentURL: self.data.url('test-panel.html'),
   contentScriptFile: self.data.url('test-panel.js'),
-  contentStyle: 'body: { margin: 10px; }'
+  contentStyle: 'body: { margin: 10px; }',
+  onHide: handleHide
 });
 
-/* Hide the testing panel when the "Test Yourself"
- * panel is closed.
- */
-test_panel.port.on('test-panel-close', function() {
-  test_panel.hide();
+test_panel.port.on('source-in-new-tab', function(url) {
+  tabs.open(url);
 });
-
 /* Helper function to determine which flashcard to show.
  *
  * @param method Either FLASHCARD_RANDOM for a random flashcard
@@ -170,12 +160,20 @@ function flashcardToDisplay (method) {
   }  
 }
 
-/* Open the "Test Yourself" popup when the test option is
- * selected from the navigation panel.
- */
-buttonPanel.port.on('test-selected', function() {
+test_panel.port.on('test-selected', function() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return;
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 });
+
+browse_flashcards.port.on('test-selected', function() {
+  var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+  test_panel.port.emit('set-question', flashcard);
+  test_panel.show();
+});
+
+test_panel.port.on('browse-selected', function() {
+  browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
+  browse_flashcards.show();
+});
+
