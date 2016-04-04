@@ -3,7 +3,7 @@ var { ToggleButton } = require('sdk/ui/button/toggle');
 var panels = require('sdk/panel')
 var tabs = require('sdk/tabs')
 
-/* Constants, used to determine which flashcard to display */ 
+/* Constants, used to determine which flashcard to display */
 const FLASHCARD_RANDOM = 0;
 const FLASHCARD_SEQUENCE = 1;
 
@@ -15,6 +15,25 @@ if (typeof ss.storage.flashcards == 'undefined') {
 if (typeof ss.storage.counterFlashcard == 'undefined') {
   ss.storage.counterFlashcard = 0;
 }
+
+var sidebar = require("sdk/ui/sidebar").Sidebar({
+  id: 'flashcardsSidebar',
+  title: 'Flashcards',
+  url: self.data.url("sidebar.html"),
+  onAttach: function (worker) {
+    console.log("attaching");
+  },
+  onShow: function () {
+    console.log("showing");
+  },
+  onHide: function () {
+    console.log("hiding");
+  },
+  onDetach: function () {
+    console.log("detaching");
+  }
+});
+
 
 /* Create the 'Create Flashcard' popup panel. */
 var create_flashcard = panels.Panel({
@@ -103,6 +122,7 @@ var buttonPanel = panels.Panel({
 
 /* Show the navigation panel when the addon button is clicked. */
 function handleChange(state) {
+  sidebar.show();
   if (state.checked) {
     if (ss.storage.flashcards.length == 0) {
       buttonPanel.show({
@@ -123,8 +143,8 @@ function handleHide() {
   button.state('window', {checked: false});
 }
 
-/* Create the "Test Yourself" pop-up panel. 
- * 
+/* Create the "Test Yourself" pop-up panel.
+ *
  */
 var test_panel = require('sdk/panel').Panel({
   width: 500,
@@ -145,7 +165,7 @@ test_panel.port.on('source-in-new-tab', function(url) {
  * @return       Flashcard to be displayed by a test panel
  */
 function flashcardToDisplay (method) {
-  if(method == FLASHCARD_RANDOM) { 
+  if(method == FLASHCARD_RANDOM) {
     var length = ss.storage.flashcards.length;
     if (length == 0) return null;
     var rand = Math.floor(Math.random() * length);
@@ -157,7 +177,7 @@ function flashcardToDisplay (method) {
     return ss.storage.flashcards[ind];
   } else {
     return null;
-  }  
+  }
 }
 
 test_panel.port.on('test-selected', function() {
@@ -176,4 +196,5 @@ test_panel.port.on('browse-selected', function() {
   browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
   browse_flashcards.show();
 });
+
 
