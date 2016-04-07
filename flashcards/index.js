@@ -16,11 +16,6 @@ if (typeof ss.storage.categories == 'undefined') {
   ss.storage.categories = [];
   ss.storage.categories.push("Untitled");
 }
-
-ss.storage.categories = [];
-ss.storage.categories.push("Category1");
-ss.storage.categories.push("Category2");
-
 if (typeof ss.storage.counter == 'undefined'){
   ss.storage.counter = [];
   ss.storage.counter['all'] = 0;
@@ -85,7 +80,7 @@ var menuItem = contextMenu.Item({
 /* Create the 'Browse Flashcards' popup panel. */
 var browse_flashcards = require('sdk/panel').Panel({
   width: 500,
-  height: 500,
+  height: 550,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
   contentStyle: 'body { margin: 10px; }'
@@ -109,6 +104,48 @@ browse_flashcards.port.on('delete-flashcard', function(index) {
   var cat = ss.storage.flashcards[index].category;
   ss.storage.counter[cat] = 0;
   ss.storage.flashcards.splice(index, 1);
+});
+
+/* Create the "Manage Categories" panel. */
+var manage_categories = require('sdk/panel').Panel({
+  width: 300,  
+  height: 300,
+  contentURL: self.data.url('manage-categories.html'),
+  contentScriptFile: self.data.url('manage-categories.js'),
+  contentStyle: 'body { margin: 10px;}'
+});
+
+/* New category. */ 
+manage_categories.port.on('create-category', function(new_categ) {
+  ss.storage.categories.push(new_categ);
+  ss.storage.counter[new_categ] = 0;
+});
+
+/* Delete a category and all flashcards of that category*/ 
+manage_categories.port.on('delete-category', function(index) {
+  var toDelete = ss.storage.categories[index];
+  delete ss.storage.counter[toDelete];
+  ss.storage.counter['all'] = 0;
+  var new_flashcards = [];
+  for(var i = 0; i < ss.storage.flashcards.length; i++){
+     if(ss.storage.flashcards[i].category != toDelete)
+       new_flashcards.push(ss.storage.flashcards[i]);
+  }
+  ss.storage.flashcards = [];
+  for(var i = 0; i < new_flashcards.length; i++)
+    ss.storage.flashcards.push(new_flashcards[i]);
+});
+
+/* Rename a category and update all the flashcards. */ 
+manage_categories.port.on('rename-category', function(index, new_value){
+  var toUpdate = ss.storage.categories[index];
+  ss.storage.counter[new_value] = ss.storage.counter[toUpdate];
+  delete ss.storage.counter[toUpdate];
+  for(var i = 0; i < ss.storage.flashcards.length; i++){
+     if(ss.storage.flashcards[i].category == toUpdate)
+       ss.storage.flashcards[i].category = new_value;
+  }
+  ss.storage.categories[index] = new_value;
 });
 
 /* Create the addon button for browsing/testing flashcards. */
@@ -229,4 +266,7 @@ test_panel.port.on('browse-selected', function() {
   browse_flashcards.show();
 });
 
-
+browse_flashcards.port.on('manage-categories', function () {
+  manage_categories.port.emit('manage', ss.storage.categories);
+  manage_categories.show();
+});

@@ -3,6 +3,7 @@ var back = document.getElementById('back');
 var url = document.getElementById('url');
 var update = document.getElementById('update');
 var deleteCard = document.getElementById('delete');
+var manage = document.getElementById('manage');
 var previous = document.getElementById('previous');
 var next = document.getElementById('next');
 var page = document.getElementById('page');
@@ -94,6 +95,10 @@ deleteCard.addEventListener('click', function() {
   	setup();
   }
 
+}, false);
+
+manage.addEventListener('click', function() {
+  self.port.emit('manage-categories');
 }, false);
 
 /* Disable the 'previous' link if on the first flashcard
