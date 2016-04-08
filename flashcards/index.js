@@ -109,20 +109,20 @@ browse_flashcards.port.on('delete-flashcard', function(index) {
 
 /* Create the "Manage Categories" panel. */
 var manage_categories = require('sdk/panel').Panel({
-  width: 300,  
+  width: 300,
   height: 300,
   contentURL: self.data.url('manage-categories.html'),
   contentScriptFile: self.data.url('manage-categories.js'),
   contentStyle: 'body { margin: 10px;}'
 });
 
-/* New category. */ 
+/* New category. */
 manage_categories.port.on('create-category', function(new_categ) {
   ss.storage.categories.push(new_categ);
   ss.storage.counter[new_categ] = 0;
 });
 
-/* Delete a category and all flashcards of that category*/ 
+/* Delete a category and all flashcards of that category*/
 manage_categories.port.on('delete-category', function(index) {
   var toDelete = ss.storage.categories[index];
   delete ss.storage.counter[toDelete];
@@ -137,7 +137,7 @@ manage_categories.port.on('delete-category', function(index) {
     ss.storage.flashcards.push(new_flashcards[i]);
 });
 
-/* Rename a category and update all the flashcards. */ 
+/* Rename a category and update all the flashcards. */
 manage_categories.port.on('rename-category', function(index, new_value){
   var toUpdate = ss.storage.categories[index];
   ss.storage.counter[new_value] = ss.storage.counter[toUpdate];
@@ -166,8 +166,9 @@ var button = ToggleButton({
  */
 var buttonPanel = panels.Panel({
   contentURL: self.data.url('button-panel.html'),
-  width: 200,
-  height: 80,
+  contentScriptFile: self.data.url('button-panel.js'),
+  width: 210,
+  height: getButtonPanelHeight(),
   onHide: handleHide
 });
 
@@ -175,19 +176,28 @@ var buttonPanel = panels.Panel({
 function handleChange(state) {
   //sidebar.show();
   if (state.checked) {
-    if (ss.storage.flashcards.length == 0) {
-      buttonPanel.show({
-        position: button
-      });
-    } else {
-      //var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-      //test_panel.port.emit('set-question', flashcard);
-      //test_panel.show();
-      browse_flashcards.port.emit('flashcards', ss.storage.flashcards, ss.storage.categories)
-      browse_flashcards.show();
-    }
+    buttonPanel.show({
+      position: button, width: 210, height:getButtonPanelHeight()
+    });
+    buttonPanel.port.emit('flashcards', ss.storage.flashcards);
+    // if (ss.storage.flashcards.length == 0) {
+    //   buttonPanel.show({
+    //     position: button
+    //   });
+    // } else {
+    //   //var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+    //   //test_panel.port.emit('set-question', flashcard);
+    //   //test_panel.show();
+    //   browse_flashcards.port.emit('flashcards', ss.storage.flashcards, ss.storage.categories)
+    //   browse_flashcards.show();
+    // }
   }
 }
+
+function getButtonPanelHeight() {
+  return 50 + (ss.storage.flashcards.length * 120);
+}
+
 
 /* Hide the navigation panel when the addon button is clicked
  * while the panel is open.
@@ -225,7 +235,7 @@ function flashcardToDisplay (method) {
   if(currentCategory == "all") {
     relevantFlashcards = ss.storage.flashcards;
   } else {
-    for(var i = 0; i < ss.storage.flashcards.length; i++) { 
+    for(var i = 0; i < ss.storage.flashcards.length; i++) {
       if (ss.storage.flashcards[i].category == currentCategory)
         relevantFlashcards.push(ss.storage.flashcards[i]);
     }
@@ -248,7 +258,7 @@ function flashcardToDisplay (method) {
 
 function launchTesting() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return; 
+  if (flashcard == null) return;
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
 }
@@ -262,8 +272,14 @@ browse_flashcards.port.on('test-selected', function(selectedCategory) {
   launchTesting();
 });
 
-test_panel.port.on('browse-selected', function() {
-  browse_flashcards.port.emit('flashcards', ss.storage.flashcards, ss.storage.categories)
+buttonPanel.port.on('browse-selected', function(idx) {
+  console.log(idx);
+  browse_flashcards.port.emit('flashcardsAndIndex', ss.storage.flashcards, ss.storage.categories, idx);
+  browse_flashcards.show();
+});
+
+test_panel.port.on('browse-selected-two', function(idx) {
+  browse_flashcards.port.emit('flashcardsAndIndex', ss.storage.flashcards, ss.storage.categories, idx);
   browse_flashcards.show();
 });
 

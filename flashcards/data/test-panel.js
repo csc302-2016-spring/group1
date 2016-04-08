@@ -11,8 +11,8 @@ var index = 0;
 var answer = ''; // actual answer
 
 /*
- * Reveals the answer 
- */ 
+ * Reveals the answer
+ */
 show_answer.addEventListener('click', function () {
   answerToDisplay.value = answer;
   divAnswer.style.display = 'block';
@@ -21,7 +21,7 @@ show_answer.addEventListener('click', function () {
 }, false);
 
 /*
- * Sets the 'Question' field to the front of the given flashcard, 
+ * Sets the 'Question' field to the front of the given flashcard,
  * clears the 'Answer' field and sets focus to 'Show Answer' button and displays the URL
  */
 self.port.on('set-question', function setQuestion(flashcard) {
@@ -45,5 +45,5 @@ next.addEventListener('click', function() {
 }, false);
 
 browse.addEventListener('click', function() {
-  self.port.emit('browse-selected');
+  self.port.emit('browse-selected-two', index);
 }, false);

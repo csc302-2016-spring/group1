@@ -18,18 +18,18 @@ var currentFlashcard;
 var categories;
 
 /* Set up all the flashcard related properties.
- * 
+ *
  */
 function setup() {
   front.value = flashcards[currentFlashcard].front;
   back.value = flashcards[currentFlashcard].back;
   url.value = flashcards[currentFlashcard].url;
   categDropdown.value = flashcards[currentFlashcard].category;
-} 
+}
 
 /* Set up the categories dropdown list.
  *
- */ 
+ */
 function setCategories() {
   categDropdown.options.length = 0;
   testCategories.options.length = 0;
@@ -37,13 +37,13 @@ function setCategories() {
   opt_all.value = "all";
   opt_all.innerHTML = "all";
   testCategories.appendChild(opt_all);
- 
+
   for(var i = 0; i < categories.length;i++){
      var opt = document.createElement('option');
      var opt_test = document.createElement('option');
      opt.value = opt_test.value = categories[i];
      opt.innerHTML = opt_test.innerHTML = categories[i];
-     categDropdown.appendChild(opt); 
+     categDropdown.appendChild(opt);
      testCategories.appendChild(opt_test);
   }
 }
@@ -53,7 +53,7 @@ function setCategories() {
  * flashcards to display. Otherwise, display the first
  * flashcard's details.
  */
-self.port.on('flashcards', function setFlashcards(flashcard_array, categories_array) {
+self.port.on('flashcardsAndIndex', function setFlashcards(flashcard_array, categories_array, index) {
   flashcards = flashcard_array;
   categories = categories_array;
   if (flashcards.length == 0) {
@@ -61,7 +61,7 @@ self.port.on('flashcards', function setFlashcards(flashcard_array, categories_ar
   	noFlashcards.style.display = 'block';
   } else {
         setCategories();
-  	currentFlashcard = 0;
+  	currentFlashcard = index;
   	enableDisablePreviousNext();
   	setup();
   	details.style.display = 'block';
@@ -138,4 +138,3 @@ test.addEventListener('click', function() {
   var selectedCateg = testCategories.options[testCategories.selectedIndex].value;
   self.port.emit('test-selected', selectedCateg);
 }, false);
-
