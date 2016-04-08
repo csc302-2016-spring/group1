@@ -25,3 +25,50 @@ a.disabled {
   text-align: center;
 }
 
+body {
+  background-color: rgb(223,223,223);
+}
+
+.flashcard {
+  background-color: white;
+  border: 1px solid #979797;
+  border-radius: 16px;
+  color: #4A4A4A;
+  text-align: center;
+  margin: 8px;
+}
+
+
+.flashcard-title {
+   font-size: 14px;
+}
+
+.flashcard-description {
+   font-size: 14px;
+}
+
+.flashcard-edit {
+   margin-top:8px;
+   margin-left: 8px;
+   font-size: 10px;
+   float: left;
+}
+
+.flashcard-source {
+   background: #D8D8D8;
+   border-top: 1px solid #979797;
+   border-bottom-left-radius: 16px;
+   border-bottom-right-radius: 16px;
+   font-size: 10px;
+   width:100%;
+}
+
+.edit-container {
+   display: block;
+   overflow: auto;
+}
+
+.source-container {
+   display: block;
+   overflow: auto;
+}
