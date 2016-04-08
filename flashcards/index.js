@@ -24,7 +24,7 @@ if (typeof ss.storage.counter == 'undefined'){
        ss.storage.counter[ss.storage.categories[i]] = 0;
   }
 }
-
+/*
 var sidebar = require("sdk/ui/sidebar").Sidebar({
   id: 'flashcardsSidebar',
   title: 'Flashcards',
@@ -42,7 +42,7 @@ var sidebar = require("sdk/ui/sidebar").Sidebar({
     console.log("detaching");
   }
 });
-
+*/
 /* Create the 'Create Flashcard' popup panel. */
 var create_flashcard = panels.Panel({
   width: 500,
@@ -83,7 +83,8 @@ var browse_flashcards = require('sdk/panel').Panel({
   height: 550,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
-  contentStyle: 'body { margin: 10px; }'
+  contentStyle: 'body { margin: 10px; }',
+  onHide: handleHide
 });
 
 /* Hide the browsing panel when the 'Browse Flashcards' form
@@ -172,7 +173,7 @@ var buttonPanel = panels.Panel({
 
 /* Show the navigation panel when the addon button is clicked. */
 function handleChange(state) {
-  sidebar.show();
+  //sidebar.show();
   if (state.checked) {
     if (ss.storage.flashcards.length == 0) {
       buttonPanel.show({
