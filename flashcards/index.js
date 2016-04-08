@@ -3,7 +3,7 @@ var { ToggleButton } = require('sdk/ui/button/toggle');
 var panels = require('sdk/panel')
 var tabs = require('sdk/tabs')
 
-/* Constants, used to determine which flashcard to display */ 
+/* Constants, used to determine which flashcard to display */
 const FLASHCARD_RANDOM = 0;
 const FLASHCARD_SEQUENCE = 1;
 
@@ -12,10 +12,37 @@ var ss = require('sdk/simple-storage');
 if (typeof ss.storage.flashcards == 'undefined') {
   ss.storage.flashcards = [];
 }
-if (typeof ss.storage.counterFlashcard == 'undefined') {
-  ss.storage.counterFlashcard = 0;
+if (typeof ss.storage.categories == 'undefined') {
+  ss.storage.categories = [];
+  ss.storage.categories.push("Untitled");
 }
-
+if (typeof ss.storage.counter == 'undefined'){
+  ss.storage.counter = [];
+  ss.storage.counter['all'] = 0;
+  if(ss.storage.categories){
+     for(var i = 0; i < ss.storage.categories.length; i++)
+       ss.storage.counter[ss.storage.categories[i]] = 0;
+  }
+}
+/*
+var sidebar = require("sdk/ui/sidebar").Sidebar({
+  id: 'flashcardsSidebar',
+  title: 'Flashcards',
+  url: self.data.url("sidebar.html"),
+  onAttach: function (worker) {
+    console.log("attaching");
+  },
+  onShow: function () {
+    console.log("showing");
+  },
+  onHide: function () {
+    console.log("hiding");
+  },
+  onDetach: function () {
+    console.log("detaching");
+  }
+});
+*/
 /* Create the 'Create Flashcard' popup panel. */
 var create_flashcard = panels.Panel({
   width: 500,
@@ -28,15 +55,8 @@ var create_flashcard = panels.Panel({
 /* Store the new flashcard and hide the creation window
  * when the 'Create Flashcard' form is submitted.
  */
-create_flashcard.port.on('create-flashcard-submit', function(front, back) {
-  ss.storage.flashcards.push({front: front, back: back, url: tabs.activeTab.url});
-  create_flashcard.hide();
-});
-
-/* Hide the creation window when the 'Create Flashcard' form
- * is closed.
- */
-create_flashcard.port.on('create-flashcard-close', function() {
+create_flashcard.port.on('create-flashcard-submit', function(front, back, category) {
+  ss.storage.flashcards.push({front: front, back: back, url: tabs.activeTab.url, category: category});
   create_flashcard.hide();
 });
 
@@ -52,7 +72,7 @@ var menuItem = contextMenu.Item({
                  '  self.postMessage(text);' +
                  '});',
   onMessage: function (text) {
-    create_flashcard.port.emit('set-front', text);
+    create_flashcard.port.emit('set-front', text, ss.storage.categories);
     create_flashcard.show();
   }
 });
@@ -60,10 +80,11 @@ var menuItem = contextMenu.Item({
 /* Create the 'Browse Flashcards' popup panel. */
 var browse_flashcards = require('sdk/panel').Panel({
   width: 500,
-  height: 560,
+  height: 550,
   contentURL: self.data.url('browse-flashcards.html'),
   contentScriptFile: self.data.url('browse-flashcards.js'),
-  contentStyle: 'body { margin: 10px; }'
+  contentStyle: 'body { margin: 10px; }',
+  onHide: handleHide
 });
 
 /* Hide the browsing panel when the 'Browse Flashcards' form
@@ -80,7 +101,52 @@ browse_flashcards.port.on('update-flashcard', function(index, value) {
 
 /* Delete the flashcard. */
 browse_flashcards.port.on('delete-flashcard', function(index) {
+  ss.storage.counter['all'] = 0;
+  var cat = ss.storage.flashcards[index].category;
+  ss.storage.counter[cat] = 0;
   ss.storage.flashcards.splice(index, 1);
+});
+
+/* Create the "Manage Categories" panel. */
+var manage_categories = require('sdk/panel').Panel({
+  width: 300,  
+  height: 300,
+  contentURL: self.data.url('manage-categories.html'),
+  contentScriptFile: self.data.url('manage-categories.js'),
+  contentStyle: 'body { margin: 10px;}'
+});
+
+/* New category. */ 
+manage_categories.port.on('create-category', function(new_categ) {
+  ss.storage.categories.push(new_categ);
+  ss.storage.counter[new_categ] = 0;
+});
+
+/* Delete a category and all flashcards of that category*/ 
+manage_categories.port.on('delete-category', function(index) {
+  var toDelete = ss.storage.categories[index];
+  delete ss.storage.counter[toDelete];
+  ss.storage.counter['all'] = 0;
+  var new_flashcards = [];
+  for(var i = 0; i < ss.storage.flashcards.length; i++){
+     if(ss.storage.flashcards[i].category != toDelete)
+       new_flashcards.push(ss.storage.flashcards[i]);
+  }
+  ss.storage.flashcards = [];
+  for(var i = 0; i < new_flashcards.length; i++)
+    ss.storage.flashcards.push(new_flashcards[i]);
+});
+
+/* Rename a category and update all the flashcards. */ 
+manage_categories.port.on('rename-category', function(index, new_value){
+  var toUpdate = ss.storage.categories[index];
+  ss.storage.counter[new_value] = ss.storage.counter[toUpdate];
+  delete ss.storage.counter[toUpdate];
+  for(var i = 0; i < ss.storage.flashcards.length; i++){
+     if(ss.storage.flashcards[i].category == toUpdate)
+       ss.storage.flashcards[i].category = new_value;
+  }
+  ss.storage.categories[index] = new_value;
 });
 
 /* Create the addon button for browsing/testing flashcards. */
@@ -100,7 +166,6 @@ var button = ToggleButton({
  */
 var buttonPanel = panels.Panel({
   contentURL: self.data.url('button-panel.html'),
-  contentScriptFile: self.data.url('button-panel.js'),
   width: 200,
   height: 80,
   onHide: handleHide
@@ -108,10 +173,19 @@ var buttonPanel = panels.Panel({
 
 /* Show the navigation panel when the addon button is clicked. */
 function handleChange(state) {
+  //sidebar.show();
   if (state.checked) {
-    buttonPanel.show({
-      position: button
-    });
+    if (ss.storage.flashcards.length == 0) {
+      buttonPanel.show({
+        position: button
+      });
+    } else {
+      //var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
+      //test_panel.port.emit('set-question', flashcard);
+      //test_panel.show();
+      browse_flashcards.port.emit('flashcards', ss.storage.flashcards, ss.storage.categories)
+      browse_flashcards.show();
+    }
   }
 }
 
@@ -122,31 +196,23 @@ function handleHide() {
   button.state('window', {checked: false});
 }
 
-/* Open the "Browse Flashcards" popup when the browse option
- * is selected from the navigation panel.
- */
-buttonPanel.port.on('browse-selected', function() {
-  browse_flashcards.port.emit('flashcards', ss.storage.flashcards);
-  browse_flashcards.show();
-});
-
-/* Create the "Test Yourself" pop-up panel. 
- * 
+/* Create the "Test Yourself" pop-up panel.
+ *
  */
 var test_panel = require('sdk/panel').Panel({
   width: 500,
-  height: 390,
+  height: 220,
   contentURL: self.data.url('test-panel.html'),
   contentScriptFile: self.data.url('test-panel.js'),
-  contentStyle: 'body: { margin: 10px; }'
+  contentStyle: 'body: { margin: 10px; }',
+  onHide: handleHide
 });
 
-/* Hide the testing panel when the "Test Yourself"
- * panel is closed.
- */
-test_panel.port.on('test-panel-close', function() {
-  test_panel.hide();
+test_panel.port.on('source-in-new-tab', function(url) {
+  tabs.open(url);
 });
+
+var currentCategory = "all";
 
 /* Helper function to determine which flashcard to show.
  *
@@ -155,27 +221,53 @@ test_panel.port.on('test-panel-close', function() {
  * @return       Flashcard to be displayed by a test panel
  */
 function flashcardToDisplay (method) {
-  if(method == FLASHCARD_RANDOM) { 
-    var length = ss.storage.flashcards.length;
+  var relevantFlashcards = [];
+  if(currentCategory == "all") {
+    relevantFlashcards = ss.storage.flashcards;
+  } else {
+    for(var i = 0; i < ss.storage.flashcards.length; i++) { 
+      if (ss.storage.flashcards[i].category == currentCategory)
+        relevantFlashcards.push(ss.storage.flashcards[i]);
+    }
+  }
+
+  if(method == FLASHCARD_RANDOM) {
+    var length = relevantFlashcards.length;
     if (length == 0) return null;
     var rand = Math.floor(Math.random() * length);
-    return ss.storage.flashcards[rand];
+    return relevantFlashcards[rand];
   } else if (method == FLASHCARD_SEQUENCE){
-    var ind = ss.storage.counterFlashcard;
-    if (ss.storage.flashcards[ind] == null) return null;
-    ss.storage.counterFlashcard = (ss.storage.counterFlashcard + 1) % ss.storage.flashcards.length;
-    return ss.storage.flashcards[ind];
+    var ind = ss.storage.counter[currentCategory];
+    if (relevantFlashcards[ind] == null) return null;
+    ss.storage.counter[currentCategory] = (ss.storage.counter[currentCategory] + 1) % relevantFlashcards.length;
+    return relevantFlashcards[ind];
   } else {
     return null;
-  }  
+  }
 }
 
-/* Open the "Test Yourself" popup when the test option is
- * selected from the navigation panel.
- */
-buttonPanel.port.on('test-selected', function() {
+function launchTesting() {
   var flashcard = flashcardToDisplay(FLASHCARD_SEQUENCE);
-  if (flashcard == null) return;
+  if (flashcard == null) return; 
   test_panel.port.emit('set-question', flashcard);
   test_panel.show();
+}
+
+test_panel.port.on('test-selected', function() {
+  launchTesting();
+});
+
+browse_flashcards.port.on('test-selected', function(selectedCategory) {
+  currentCategory = selectedCategory;
+  launchTesting();
+});
+
+test_panel.port.on('browse-selected', function() {
+  browse_flashcards.port.emit('flashcards', ss.storage.flashcards, ss.storage.categories)
+  browse_flashcards.show();
+});
+
+browse_flashcards.port.on('manage-categories', function () {
+  manage_categories.port.emit('manage', ss.storage.categories);
+  manage_categories.show();
 });
